@@ -5,11 +5,12 @@ import {
   TextStyle,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
+  useColorScheme,
 } from 'react-native'
-
 import { useActionSheet } from '@expo/react-native-action-sheet'
+import { RectButton } from 'react-native-gesture-handler'
+import { IMessage, User } from '../../src'
 import {
   getLocationAsync,
   pickImageAsync,
@@ -21,7 +22,8 @@ interface Props {
   wrapperStyle?: StyleProp<ViewStyle>
   containerStyle?: StyleProp<ViewStyle>
   iconTextStyle?: StyleProp<TextStyle>
-  onSend: (messages: unknown) => void
+  onSend: (messages: IMessage[]) => void
+  user: User
 }
 
 const CustomActions = ({
@@ -30,56 +32,100 @@ const CustomActions = ({
   containerStyle,
   wrapperStyle,
   onSend,
+  user,
 }: Props) => {
   const { showActionSheetWithOptions } = useActionSheet()
+  const colorScheme = useColorScheme()
+
+  const handlePickImage = useCallback(async () => {
+    const images = await pickImageAsync()
+    if (!images)
+      return
+
+    const messages: IMessage[] = images.map(image => ({
+      _id: Math.random().toString(36).substring(7),
+      image,
+      text: '',
+      createdAt: new Date(),
+      user,
+    }))
+    onSend(messages)
+  }, [onSend, user])
+
+  const handleTakePicture = useCallback(async () => {
+    const images = await takePictureAsync()
+    if (!images)
+      return
+
+    const messages: IMessage[] = images.map(image => ({
+      _id: Math.random().toString(36).substring(7),
+      image,
+      text: '',
+      createdAt: new Date(),
+      user,
+    }))
+    onSend(messages)
+  }, [onSend, user])
+
+  const handleSendLocation = useCallback(async () => {
+    const location = await getLocationAsync()
+    if (!location)
+      return
+
+    const message: IMessage = {
+      _id: Math.random().toString(36).substring(7),
+      location,
+      text: '',
+      createdAt: new Date(),
+      user,
+    }
+    onSend([message])
+  }, [onSend, user])
 
   const onActionsPress = useCallback(() => {
-    const options = [
-      'Choose From Library',
-      'Take Picture',
-      'Send Location',
-      'Cancel',
+    const options: { title: string, action?: () => Promise<void> }[] = [
+      { title: 'Choose From Library', action: handlePickImage },
+      { title: 'Take Picture', action: handleTakePicture },
+      { title: 'Send Location', action: handleSendLocation },
+      { title: 'Cancel' },
     ]
     const cancelButtonIndex = options.length - 1
 
     showActionSheetWithOptions(
       {
-        options,
+        options: options.map(o => o.title),
         cancelButtonIndex,
       },
       async buttonIndex => {
-        switch (buttonIndex) {
-          case 0:
-            pickImageAsync(onSend)
-            return
-          case 1:
-            takePictureAsync(onSend)
-            return
-          case 2:
-            getLocationAsync(onSend)
+        if (buttonIndex !== undefined) {
+          const selectedOption = options[buttonIndex]
+          selectedOption?.action?.()
         }
       }
     )
-  }, [showActionSheetWithOptions, onSend])
+  }, [showActionSheetWithOptions, handlePickImage, handleTakePicture, handleSendLocation])
 
   const renderIconComponent = useCallback(() => {
     if (renderIcon)
       return renderIcon()
 
+    const wrapperColorStyle = colorScheme === 'dark' ? styles.wrapper_dark : {}
+    const iconTextColorStyle = colorScheme === 'dark' ? styles.iconText_dark : {}
+
     return (
-      <View style={[styles.wrapper, wrapperStyle]}>
-        <Text style={[styles.iconText, iconTextStyle]}>+</Text>
+      <View style={[styles.wrapper, wrapperColorStyle, wrapperStyle]}>
+        <Text style={[styles.iconText, iconTextColorStyle, iconTextStyle]}>+</Text>
       </View>
     )
-  }, [renderIcon, wrapperStyle, iconTextStyle])
+  }, [renderIcon, wrapperStyle, iconTextStyle, colorScheme])
 
   return (
-    <TouchableOpacity
+    <RectButton
       style={[styles.container, containerStyle]}
       onPress={onActionsPress}
     >
       {renderIconComponent()}
-    </TouchableOpacity>
+    </RectButton>
   )
 }
 
@@ -100,6 +146,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  wrapper_dark: {
+    borderColor: '#666',
+  },
   iconText: {
     color: '#b2b2b2',
     fontWeight: 'bold',
@@ -107,5 +156,8 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     backgroundColor: 'transparent',
     textAlign: 'center',
+  },
+  iconText_dark: {
+    color: '#999',
   },
 })

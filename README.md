@@ -1,5 +1,5 @@
-<p align="center" >
-<p align="center" >
+<p align="center">
+<p align="center">
    <a href="https://reactnative.gallery/FaridSafi/gifted-chat">
     <img alt="react-native-gifted-chat" src="https://thumbs.gfycat.com/AbsoluteSadDobermanpinscher-size_restricted.gif" width="260" height="510" />
  </a>
@@ -26,10 +26,7 @@
 </p>
 
 <p align="center">
-  <a href="https://reverent-bardeen-47c862.netlify.com/" target="_blank">Demo Web 🖥</a>
-</p>
-<p align="center">
-  <a href="https://snack.expo.io/@xcarpentier/giftedchat-playground" target="_blank">Snack GiftedChat playground</a>
+  <a href="https://snack.expo.dev/@kesha-antonov/gifted-chat-playground" target="_blank">Snack GiftedChat playground</a>
   <img height="18" src="https://snack.expo.io/favicon.ico" />
 </p>
 
@@ -85,21 +82,19 @@
 
 ## Features
 
-- 🎉 **_`react-native-web`able_ (since 0.10.0)** [web configuration](#react-native-web)
-- Write with **TypeScript** (since 0.8.0)
 - Fully customizable components
 - Composer actions (to attach photos, etc.)
 - Load earlier messages
 - Copy messages to clipboard
-- Touchable links using [react-native-parsed-text](https://github.com/taskrabbit/react-native-parsed-text)
+- Touchable links using [react-native-autolink](https://github.com/joshswan/react-native-autolink)
 - Avatar as user's initials
 - Localized dates
 - Multi-line TextInput
 - InputToolbar avoiding keyboard
-- Redux support
 - System message
 - Quick Reply messages (bot)
 - Typing indicator
+- react-native-web [web configuration](#react-native-web)
 
 # Getting started
 
@@ -117,18 +112,18 @@ Readme for this version: [2.6.5 readme](https://github.com/FaridSafi/react-nativ
 
 Yarn:
 ```bash
-yarn add react-native-gifted-chat react-native-reanimated react-native-keyboard-controller
+yarn add react-native-gifted-chat react-native-reanimated react-native-keyboard-controller react-native-gesture-handler react-native-safe-area-context
 ```
 
 Npm:
 
 ```bash
-npm install --save react-native-gifted-chat react-native-reanimated react-native-keyboard-controller
+npm install --save react-native-gifted-chat react-native-reanimated react-native-keyboard-controller react-native-gesture-handler react-native-safe-area-context
 ```
 
 Expo
 ```bash
-npx expo install react-native-gifted-chat react-native-reanimated react-native-keyboard-controller
+npx expo install react-native-gifted-chat react-native-reanimated react-native-keyboard-controller react-native-gesture-handler react-native-safe-area-context
 ```
 
 ### Non-expo users
@@ -173,9 +168,15 @@ fireEvent(loadingWrapper, 'layout', {
 ```jsx
 import React, { useState, useCallback, useEffect } from 'react'
 import { GiftedChat } from 'react-native-gifted-chat'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export function Example() {
   const [messages, setMessages] = useState([])
+  const insets = useSafeAreaInsets()
+
+  // If you have a tab bar, include its height
+  const tabbarHeight = 50
+  const keyboardBottomOffset = insets.bottom + tabbarHeight
 
   useEffect(() => {
     setMessages([
@@ -205,6 +206,7 @@ export function Example() {
       user={{
         _id: 1,
       }}
+      keyboardBottomOffset={keyboardBottomOffset}
     />
   )
 }
@@ -212,7 +214,7 @@ export function Example() {
 
 ## Advanced example
 
-See [`App.tsx`](https://github.com/FaridSafi/react-native-gifted-chat/blob/master/example/App.tsx) for a working demo!
+See [`examples`](example) for a working demo!
 
 ## "Slack" example
 
@@ -353,10 +355,13 @@ interface QuickReplies {
 - **`messageContainerRef`** _(FlatList ref)_ - Ref to the flatlist
 - **`textInputRef`** _(TextInput ref)_ - Ref to the text input
 - **`messages`** _(Array)_ - Messages to display
+- **`messagesContainerStyle`** _(Object)_ - Custom style for the messages container
 - **`isTyping`** _(Bool)_ - Typing Indicator state; default `false`. If you use`renderFooter` it will override this.
+- **`keyboardBottomOffset`** _(Integer)_ - Distance between the bottom of the screen and bottom of the `GiftedChat` component. Useful when you have a tab bar or navigation bar; default is `0`. Needed for correct keyboard avoiding behavior. Without it you might see gap between the keyboard and the input toolbar if you have a tab bar, navigation bar, or safe area.
 - **`isKeyboardInternallyHandled`** _(Bool)_ - Determine whether to handle keyboard awareness inside the plugin. If you have your own keyboard handling outside the plugin set this to false; default is `true`
 - **`text`** _(String)_ - Input text; default is `undefined`, but if specified, it will override GiftedChat's internal state (e.g. for redux; [see notes below](#notes-for-redux))
-- **`placeholder`** _(String)_ - Placeholder when `text` is empty; default is `'Type a message...'`
+- **`initialText`** _(String)_ - Initial text to display in the input field
+- **`onInputTextChanged`** _(Function)_ - Callback when the input text changes
 - **`messageIdGenerator`** _(Function)_ - Generate an id for new messages. Defaults to UUID v4, generated by [uuid](https://github.com/kelektiv/node-uuid)
 - **`user`** _(Object)_ - User sending the messages: `{ _id, name, avatar }`
 - **`onSend`** _(Function)_ - Callback when sending a message
@@ -365,65 +370,95 @@ interface QuickReplies {
 - **`timeFormat`** _(String)_ - Format to use for rendering times; default is `'LT'` (see [Day.js Format](https://day.js.org/docs/en/display/format))
 - **`dateFormat`** _(String)_ - Format to use for rendering dates; default is `'D MMMM'` (see [Day.js Format](https://day.js.org/docs/en/display/format))
 - **`dateFormatCalendar`** _(Object)_ - Format to use for rendering relative times; default is `{ sameDay: '[Today]' }` (see [Day.js Calendar](https://day.js.org/docs/en/plugin/calendar))
-- **`loadEarlier`** _(Bool)_ - Enables the "load earlier messages" button, required for `infiniteScroll`
-- **`onLoadEarlier`** _(Function)_ - Callback when loading earlier messages
-- **`isLoadingEarlier`** _(Bool)_ - Display an `ActivityIndicator` when loading earlier messages
-- **`renderLoading`** _(Function)_ - Render a loading view when initializing
-- **`renderLoadEarlier`** _(Function)_ - Custom "Load earlier messages" button
-- **`renderAvatar`** _(Function)_ - Custom message avatar; set to `null` to not render any avatar for the message
+- **`loadEarlierMessagesProps`** _(Object)_ - Props to pass to the LoadEarlierMessages component. The button is only visible when `isAvailable` is `true`. Supports the following props:
+  - `isAvailable` - Controls button visibility (default: false)
+  - `onPress` - Callback when button is pressed
+  - `isLoading` - Display loading indicator (default: false)
+  - `isInfiniteScrollEnabled` - Enable infinite scroll up when reaching the top of messages container, automatically calls `onPress` (not yet supported for web)
+  - `label` - Override the default "Load earlier messages" text
+  - `containerStyle` - Custom style for the button container
+  - `wrapperStyle` - Custom style for the button wrapper
+  - `textStyle` - Custom style for the button text
+  - `activityIndicatorStyle` - Custom style for the loading indicator
+  - `activityIndicatorColor` - Color of the loading indicator (default: 'white')
+  - `activityIndicatorSize` - Size of the loading indicator (default: 'small')
+- **`renderLoading`** _(Component | Function)_ - Render a loading view when initializing
+- **`renderLoadEarlier`** _(Component | Function)_ - Custom "Load earlier messages" button
+- **`renderAvatar`** _(Component | Function)_ - Custom message avatar; set to `null` to not render any avatar for the message
 - **`showUserAvatar`** _(Bool)_ - Whether to render an avatar for the current user; default is `false`, only show avatars for other users
 - **`showAvatarForEveryMessage`** _(Bool)_ - When false, avatars will only be displayed when a consecutive message is from the same user on the same day; default is `false`
 - **`onPressAvatar`** _(Function(`user`))_ - Callback when a message avatar is tapped
 - **`onLongPressAvatar`** _(Function(`user`))_ - Callback when a message avatar is long-pressed
 - **`renderAvatarOnTop`** _(Bool)_ - Render the message avatar at the top of consecutive messages, rather than the bottom; default is `false`
-- **`renderBubble`** _(Function)_ - Custom message bubble
-- **`renderTicks`** _(Function(`message`))_ - Custom ticks indicator to display message status
-- **`renderSystemMessage`** _(Function)_ - Custom system message
-- **`onPress`** _(Function(`context`, `message`))_ - Callback when a message bubble is pressed
-- **`onLongPress`** _(Function(`context`, `message`))_ - Callback when a message bubble is long-pressed (see [example using `showActionSheetWithOptions()`](https://github.com/FaridSafi/react-native-gifted-chat/blob/master@%7B2017-09-25%7D/src/Bubble.js#L96-L119))
+- **`renderBubble`** _(Component | Function)_ - Custom message bubble
+- **`renderTicks`** _(Component | Function(`message`))_ - Custom ticks indicator to display message status
+- **`renderSystemMessage`** _(Component | Function)_ - Custom system message
+- **`onPressMessage`** _(Function(`context`, `message`))_ - Callback when a message bubble is pressed
+- **`onLongPressMessage`** _(Function(`context`, `message`))_ - Callback when a message bubble is long-pressed (see [example using `showActionSheetWithOptions()`](https://github.com/FaridSafi/react-native-gifted-chat/blob/master@%7B2017-09-25%7D/src/Bubble.js#L96-L119))
 - **`inverted`** _(Bool)_ - Reverses display order of `messages`; default is `true`
 - **`renderUsernameOnMessage`** _(Bool)_ - Indicate whether to show the user's username inside the message bubble; default is `false`
-- **`renderUsername`** _(Function)_ - Custom Username container
-- **`renderMessage`** _(Function)_ - Custom message container
-- **`renderMessageText`** _(Function)_ - Custom message text
-- **`renderMessageImage`** _(Function)_ - Custom message image
-- **`renderMessageVideo`** _(Function)_ - Custom message video
-- **`imageProps`** _(Object)_ - Extra props to be passed to the [`<Image>`](https://facebook.github.io/react-native/docs/image.html) component created by the default `renderMessageImage`
+- **`renderUsername`** _(Component | Function)_ - Custom Username container
+- **`renderMessage`** _(Component | Function)_ - Custom message container
+- **`renderMessageText`** _(Component | Function)_ - Custom message text
+- **`renderMessageImage`** _(Component | Function)_ - Custom message image
+- **`renderMessageVideo`** _(Component | Function)_ - Custom message video
+- **`renderMessageAudio`** _(Component | Function)_ - Custom message audio
+- **`imageProps`** _(Object)_ - Extra props to be passed to the [`<Image>`](https://reactnative.dev/docs/image.html) component created by the default `renderMessageImage`
+- **`imageStyle`** _(Object)_ - Custom style for message images
 - **`videoProps`** _(Object)_ - Extra props to be passed to the video component created by the required `renderMessageVideo`
-- **`lightboxProps`** _(Object)_ - Extra props to be passed to the `MessageImage`'s [Lightbox](https://github.com/oblador/react-native-lightbox)
 - **`isCustomViewBottom`** _(Bool)_ - Determine whether renderCustomView is displayed before or after the text, image and video views; default is `false`
-- **`renderCustomView`** _(Function)_ - Custom view inside the bubble
-- **`renderDay`** _(Function)_ - Custom day above a message
-- **`renderTime`** _(Function)_ - Custom time inside a message
-- **`renderFooter`** _(Function)_ - Custom footer component on the ListView, e.g. `'User is typing...'`; see [App.tsx](/example/App.tsx) for an example. Overrides default typing indicator that triggers when `isTyping` is true.
-- **`renderChatEmpty`** _(Function)_ - Custom component to render in the ListView when messages are empty
-- **`renderChatFooter`** _(Function)_ - Custom component to render below the MessageContainer (separate from the ListView)
-- **`renderInputToolbar`** _(Function)_ - Custom message composer container
-- **`renderComposer`** _(Function)_ - Custom text input message composer
-- **`renderActions`** _(Function)_ - Custom action button on the left of the message composer
-- **`renderSend`** _(Function)_ - Custom send button; you can pass children to the original `Send` component quite easily, for example, to use a custom icon ([example](https://github.com/FaridSafi/react-native-gifted-chat/pull/487))
-- **`renderAccessory`** _(Function)_ - Custom second line of actions below the message composer
+- **`renderCustomView`** _(Component | Function)_ - Custom view inside the bubble
+- **`renderDay`** _(Component | Function)_ - Custom day above a message
+- **`renderTime`** _(Component | Function)_ - Custom time inside a message
+- **`timeTextStyle`** _(Object)_ - Custom text style for time inside messages (supports left/right styles)
+- **`renderFooter`** _(Component | Function)_ - Custom footer component on the ListView, e.g. `'User is typing...'`; see [App.tsx](/example/App.tsx) for an example. Overrides default typing indicator that triggers when `isTyping` is true.
+- **`renderTypingIndicator`** _(Component | Function)_ - Custom typing indicator component
+- **`renderChatEmpty`** _(Component | Function)_ - Custom component to render in the ListView when messages are empty
+- **`renderChatFooter`** _(Component | Function)_ - Custom component to render below the MessageContainer (separate from the ListView)
+- **`renderInputToolbar`** _(Component | Function)_ - Custom message composer container
+- **`renderComposer`** _(Component | Function)_ - Custom text input message composer
+- **`renderActions`** _(Component | Function)_ - Custom action button on the left of the message composer
+- **`renderSend`** _(Component | Function)_ - Custom send button; you can pass children to the original `Send` component quite easily, for example, to use a custom icon ([example](https://github.com/FaridSafi/react-native-gifted-chat/pull/487))
+- **`renderAccessory`** _(Component | Function)_ - Custom second line of actions below the message composer
 - **`onPressActionButton`** _(Function)_ - Callback when the Action button is pressed (if set, the default `actionSheet` will not be used)
-- **`bottomOffset`** _(Integer)_ - Distance of the chat from the bottom of the screen (e.g. useful if you display a tab bar)
+- **`actionSheet`** _(Function)_ - Custom action sheet interface for showing action options
+- **`actions`** _(Array)_ - Custom action options for the input toolbar action button; array of objects with `title` (string) and `action` (function) properties
+- **`actionSheetOptionTintColor`** _(String)_ - Tint color for action sheet options
 - **`focusOnInputWhenOpeningKeyboard`** _(Bool)_ - Focus on <TextInput> automatically when opening the keyboard; default `true`
 - **`minInputToolbarHeight`** _(Integer)_ - Minimum height of the input toolbar; default is `44`
-- **`listViewProps`** _(Object)_ - Extra props to be passed to the messages [`<ListView>`](https://facebook.github.io/react-native/docs/listview.html); some props can't be overridden, see the code in `MessageContainer.render()` for details
-- **`textInputProps`** _(Object)_ - Extra props to be passed to the [`<TextInput>`](https://facebook.github.io/react-native/docs/textinput.html)
-- **`textInputStyle`** _(Object)_ - Custom style to be passed to the [`<TextInput>`](https://facebook.github.io/react-native/docs/textinput.html)
-- **`multiline`** _(Bool)_ - Indicates whether to allow the [`<TextInput>`](https://facebook.github.io/react-native/docs/textinput.html) to be multiple lines or not; default `true`.
-- **`keyboardShouldPersistTaps`** _(Enum)_ - Determines whether the keyboard should stay visible after a tap; see [`<ScrollView>`](https://facebook.github.io/react-native/docs/scrollview.html) docs
-- **`onInputTextChanged`** _(Function)_ - Callback when the input text changes
-- **`maxInputLength`** _(Integer)_ - Max message composer TextInput length
-- **`parsePatterns`** _(Function)_ - Custom parse patterns for [react-native-parsed-text](https://github.com/taskrabbit/react-native-parsed-text) used to linking message content (like URLs and phone numbers), e.g.:
+- **`listProps`** _(Object)_ - Extra props to be passed to the messages [`<FlatList>`](https://reactnative.dev/docs/flatlist.html); some props can't be overridden, see the code in `MessageContainer.render()` for details
+- **`textInputProps`** _(Object)_ - props to be passed to the [`<TextInput>`](https://reactnative.dev/docs/textinput.html).
+- **`messageTextProps`** _(Object)_ - Extra props to be passed to the MessageText component. Useful for customizing link parsing behavior, text styles, and matchers. Supports all [react-native-autolink](https://github.com/joshswan/react-native-autolink) props including:
+  - `matchers` - Custom matchers for linking message content (like URLs, phone numbers, hashtags, mentions)
+  - `linkStyle` - Custom style for links
+  - `email` - Enable/disable email parsing (default: true)
+  - `phone` - Enable/disable phone number parsing (default: true)
+  - `url` - Enable/disable URL parsing (default: true)
+
+Example:
 
 ```js
- <GiftedChat
-   parsePatterns={(linkStyle) => [
-     { type: 'phone', style: linkStyle, onPress: this.onPressPhoneNumber },
-     { pattern: /#(\w+)/, style: { ...linkStyle, styles.hashtag }, onPress: this.onPressHashtag },
-   ]}
- />
+<GiftedChat
+  messageTextProps={{
+    matchers: [
+      {
+        pattern: /#(\w+)/g,
+        style: { color: '#0084ff', fontWeight: 'bold' },
+        onPress: (match) => console.log('Hashtag:', match.getAnchorText()),
+      },
+      {
+        pattern: /(?<![\.\w])@(?!__ELEMENT-)([\w-]+)/g,
+        style: { color: '#0084ff', fontWeight: 'bold' },
+        onPress: (match) => console.log('Mention:', match.getAnchorText()),
+      },
+    ],
+    linkStyle: { left: { color: 'blue' }, right: { color: 'lightblue' } },
+    phone: false,
+  }}
+/>
 ```
+
+- **`matchers`** _(Array)_ - **Deprecated:** Use `messageTextProps.matchers` instead. Custom matchers for [react-native-autolink](https://github.com/joshswan/react-native-autolink) used to linking message content (like URLs and phone numbers).
 
 - **`extraData`** _(Object)_ - Extra props for re-rendering FlatList on demand. This will be useful for rendering footer etc.
 - **`minComposerHeight`** _(Object)_ - Custom min-height of the composer.
@@ -437,9 +472,12 @@ interface QuickReplies {
 * **`onQuickReply`** _(Function)_ - Callback when sending a quick reply (to backend server)
 * **`renderQuickReplies`** _(Function)_ - Custom all quick reply view
 * **`quickReplyStyle`** _(StyleProp<ViewStyle>)_ - Custom quick reply view style
+* **`quickReplyTextStyle`** _(StyleProp<TextStyle>)_ - Custom text style for quick reply buttons
+* **`quickReplyContainerStyle`** _(StyleProp<ViewStyle>)_ - Custom container style for quick replies
 * **`renderQuickReplySend`** _(Function)_ - Custom quick reply **send** view
 * **`shouldUpdateMessage`** _(Function)_ - Lets the message component know when to update outside of normal cases.
-* **`infiniteScroll`** _(Bool)_ - infinite scroll up when reach the top of messages container, automatically call onLoadEarlier function if exist (not yet supported for the web). You need to add `loadEarlier` prop too.
+* **`typingIndicatorStyle`** _(StyleProp<ViewStyle>)_ - Custom style for the TypingIndicator component.
+* **`handleOnScroll`** _(Function)_ - Custom scroll event handler for the message list
 
 ## Notes for [Redux](https://github.com/reactjs/redux)
 
@@ -473,7 +511,7 @@ If you are using Create React Native App / Expo, no Android specific installatio
 
 - For **Expo**, there are at least 2 solutions to fix it:
 
-  - Append [`KeyboardAvoidingView`](https://facebook.github.io/react-native/docs/keyboardavoidingview) after GiftedChat. This should only be done for Android, as `KeyboardAvoidingView` may conflict with the iOS keyboard avoidance already built into GiftedChat, e.g.:
+  - Append [`KeyboardAvoidingView`](https://reactnative.dev/docs/keyboardavoidingview) after GiftedChat. This should only be done for Android, as `KeyboardAvoidingView` may conflict with the iOS keyboard avoidance already built into GiftedChat, e.g.:
 
 ```
 <View style={{ flex: 1 }}>
@@ -517,7 +555,7 @@ If you use React Navigation, additional handling may be required to account for 
 module.exports = function override(config, env) {
   config.module.rules.push({
     test: /\.js$/,
-    exclude: /node_modules[/\\](?!react-native-gifted-chat|react-native-lightbox|react-native-parsed-text)/,
+    exclude: /node_modules[/\\](?!react-native-gifted-chat)/,
     use: {
       loader: 'babel-loader',
       options: {

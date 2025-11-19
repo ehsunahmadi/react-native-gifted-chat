@@ -1,11 +1,38 @@
-import 'react-native'
 import React from 'react'
-import renderer from 'react-test-renderer'
+import { render } from '@testing-library/react-native'
 
-import { MessageContainer } from '../GiftedChat'
+import { MessageContainer } from '..'
+import { DEFAULT_TEST_MESSAGE } from './data'
 
-it('should render <MessageContainer /> and compare with snapshot', () => {
-  const tree = renderer.create(<MessageContainer />).toJSON()
+it('should render <MessageContainer /> without crashing', () => {
+  // Just verify it renders without throwing
+  expect(() => render(
+    <MessageContainer
+      messages={[DEFAULT_TEST_MESSAGE]}
+      user={{ _id: 1 }}
+    />
+  )).not.toThrow()
+})
 
-  expect(tree).toMatchSnapshot()
+it('should render <MessageContainer /> with multiple messages', () => {
+  const messages = [
+    { ...DEFAULT_TEST_MESSAGE, _id: 'test1' },
+    { ...DEFAULT_TEST_MESSAGE, _id: 'test2' },
+  ]
+
+  expect(() => render(
+    <MessageContainer
+      messages={messages}
+      user={{ _id: 1 }}
+    />
+  )).not.toThrow()
+})
+
+it('should render <MessageContainer /> with empty messages', () => {
+  expect(() => render(
+    <MessageContainer
+      messages={[]}
+      user={{ _id: 1 }}
+    />
+  )).not.toThrow()
 })

@@ -1,28 +1,28 @@
 import React, { JSX, useCallback } from 'react'
 import {
+  Pressable,
   Text,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native'
 
 import { useChatContext } from '../GiftedChatContext'
-import { QuickReplies } from '../QuickReplies'
-import { MessageText } from '../MessageText'
-import { MessageImage } from '../MessageImage'
-import { MessageVideo } from '../MessageVideo'
 import { MessageAudio } from '../MessageAudio'
-import { Time } from '../Time'
-
-import { isSameUser, isSameDay } from '../utils'
-import { IMessage } from '../types'
-import { BubbleProps } from './types'
-
+import { MessageImage } from '../MessageImage'
+import { MessageText } from '../MessageText'
+import { MessageVideo } from '../MessageVideo'
+import { QuickReplies } from '../QuickReplies'
 import stylesCommon from '../styles'
+
+import { Time } from '../Time'
+import { IMessage } from '../types'
+import { isSameDay, isSameUser, renderComponentOrElement } from '../utils'
+
 import styles from './styles'
+import { BubbleProps, RenderMessageTextProps } from './types'
 
 export * from './types'
 
-const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessage>): JSX.Element => {
+export const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessage>): JSX.Element => {
   const {
     currentMessage,
     nextMessage,
@@ -38,14 +38,15 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
     containerStyle,
     wrapperStyle,
     bottomContainerStyle,
+    onPressMessage: onPressMessageProp,
+    onLongPressMessage: onLongPressMessageProp,
   } = props
 
   const context = useChatContext()
 
   const onPress = useCallback(() => {
-    if (props.onPress)
-      props.onPress(context, currentMessage)
-  }, [context, props, currentMessage])
+    onPressMessageProp?.(context, currentMessage)
+  }, [onPressMessageProp, context, currentMessage])
 
   const onLongPress = useCallback(() => {
     const {
@@ -77,7 +78,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
   }, [
     currentMessage,
     context,
-    props,
+    onLongPressMessageProp,
   ])
 
   const styledBubbleToNext = useCallback(() => {
@@ -111,7 +112,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
     )
       return [
         styles[position].containerToPrevious,
-        containerToPreviousStyle && containerToPreviousStyle[position],
+        containerToPreviousStyle?.[position],
       ]
 
     return null
@@ -133,7 +134,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
       } = props
 
       if (props.renderQuickReplies)
-        return props.renderQuickReplies(quickReplyProps)
+        return renderComponentOrElement(props.renderQuickReplies, quickReplyProps)
 
       return (
         <QuickReplies
@@ -166,16 +167,19 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
         /* eslint-disable @typescript-eslint/no-unused-vars */
         containerStyle,
         wrapperStyle,
-        optionTitles,
+        messageTextProps,
         /* eslint-enable @typescript-eslint/no-unused-vars */
-        ...messageTextProps
+        ...messageTextPropsRest
       } = props
 
-      if (props.renderMessageText)
-        return props.renderMessageText(messageTextProps)
+      const combinedProps = { ...messageTextPropsRest, ...messageTextProps } as RenderMessageTextProps<TMessage>
 
-      return <MessageText {...messageTextProps} />
+      if (props.renderMessageText)
+        return renderComponentOrElement(props.renderMessageText, combinedProps)
+
+      return <MessageText {...combinedProps as any} />
     }
+
     return null
   }, [props, currentMessage])
 
@@ -190,10 +194,11 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
       } = props
 
       if (props.renderMessageImage)
-        return props.renderMessageImage(messageImageProps)
+        return renderComponentOrElement(props.renderMessageImage, messageImageProps)
 
       return <MessageImage {...messageImageProps} />
     }
+
     return null
   }, [props, currentMessage])
 
@@ -210,7 +215,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
     } = props
 
     if (props.renderMessageVideo)
-      return props.renderMessageVideo(messageVideoProps)
+      return renderComponentOrElement(props.renderMessageVideo, messageVideoProps)
 
     return <MessageVideo />
   }, [props, currentMessage])
@@ -228,7 +233,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
     } = props
 
     if (props.renderMessageAudio)
-      return props.renderMessageAudio(messageAudioProps)
+      return renderComponentOrElement(props.renderMessageAudio, messageAudioProps)
 
     return <MessageAudio />
   }, [props, currentMessage])
@@ -240,7 +245,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
     } = props
 
     if (renderTicks && currentMessage)
-      return renderTicks(currentMessage)
+      return renderComponentOrElement(renderTicks, currentMessage)
 
     if (
       user &&
@@ -291,7 +296,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
       } = props
 
       if (props.renderTime)
-        return props.renderTime(timeProps)
+        return renderComponentOrElement(props.renderTime, timeProps)
 
       return <Time {...timeProps} />
     }
@@ -309,7 +314,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
         return null
 
       if (renderUsername)
-        return renderUsername(currentMessage.user)
+        return renderComponentOrElement(renderUsername, currentMessage.user)
 
       return (
         <View style={styles.content.usernameView}>
@@ -333,7 +338,7 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
 
   const renderCustomView = useCallback(() => {
     if (props.renderCustomView)
-      return props.renderCustomView(props)
+      return renderComponentOrElement(props.renderCustomView, props)
 
     return null
   }, [props])
@@ -374,10 +379,9 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
           wrapperStyle && wrapperStyle[position],
         ]}
       >
-        <TouchableWithoutFeedback
+        <Pressable
           onPress={onPress}
           onLongPress={onLongPress}
-          accessibilityRole='text'
           {...props.touchableProps}
         >
           <View>
@@ -393,11 +397,9 @@ const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<TMessag
               {renderTicks()}
             </View>
           </View>
-        </TouchableWithoutFeedback>
+        </Pressable>
       </View>
       {renderQuickReplies()}
     </View>
   )
 }
-
-export default Bubble

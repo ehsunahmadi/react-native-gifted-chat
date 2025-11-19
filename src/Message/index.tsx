@@ -1,19 +1,18 @@
-import React, { memo, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { View } from 'react-native'
-import isEqual from 'lodash.isequal'
 
 import { Avatar } from '../Avatar'
-import Bubble from '../Bubble'
+import { Bubble } from '../Bubble'
 import { SystemMessage } from '../SystemMessage'
 
-import { isSameUser } from '../utils'
 import { IMessage } from '../types'
-import { MessageProps } from './types'
+import { isSameUser, renderComponentOrElement } from '../utils'
 import styles from './styles'
+import { MessageProps } from './types'
 
 export * from './types'
 
-let Message: React.FC<MessageProps<IMessage>> = (props: MessageProps<IMessage>) => {
+export const Message = <TMessage extends IMessage = IMessage>(props: MessageProps<TMessage>) => {
   const {
     currentMessage,
     renderBubble: renderBubbleProp,
@@ -36,7 +35,7 @@ let Message: React.FC<MessageProps<IMessage>> = (props: MessageProps<IMessage>) 
     } = props
 
     if (renderBubbleProp)
-      return renderBubbleProp(rest)
+      return renderComponentOrElement(renderBubbleProp, rest)
 
     return <Bubble {...rest} />
   }, [props, renderBubbleProp])
@@ -51,7 +50,7 @@ let Message: React.FC<MessageProps<IMessage>> = (props: MessageProps<IMessage>) 
     } = props
 
     if (renderSystemMessageProp)
-      return renderSystemMessageProp(rest)
+      return renderComponentOrElement(renderSystemMessageProp, rest)
 
     return <SystemMessage {...rest} />
   }, [props, renderSystemMessageProp])
@@ -112,18 +111,3 @@ let Message: React.FC<MessageProps<IMessage>> = (props: MessageProps<IMessage>) 
     </View>
   )
 }
-
-Message = memo(Message, (props, nextProps) => {
-  const shouldUpdate =
-    props.shouldUpdateMessage?.(props, nextProps) ||
-    !isEqual(props.currentMessage!, nextProps.currentMessage!) ||
-    !isEqual(props.previousMessage, nextProps.previousMessage) ||
-    !isEqual(props.nextMessage, nextProps.nextMessage)
-
-  if (shouldUpdate)
-    return false
-
-  return true
-})
-
-export default Message

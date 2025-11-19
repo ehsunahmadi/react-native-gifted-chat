@@ -6,41 +6,30 @@ import {
   TextInputProps,
   NativeSyntheticEvent,
   TextInputContentSizeChangeEventData,
+  useColorScheme,
 } from 'react-native'
-import { MIN_COMPOSER_HEIGHT, DEFAULT_PLACEHOLDER } from './Constant'
-import Color from './Color'
+import { Color } from './Color'
+import { MIN_COMPOSER_HEIGHT } from './Constant'
 import stylesCommon from './styles'
 
 export interface ComposerProps {
   composerHeight?: number
   text?: string
-  placeholder?: string
-  placeholderTextColor?: string
   textInputProps?: Partial<TextInputProps>
-  textInputStyle?: TextInputProps['style']
-  textInputAutoFocus?: boolean
-  keyboardAppearance?: TextInputProps['keyboardAppearance']
-  multiline?: boolean
-  disableComposer?: boolean
   onTextChanged?(text: string): void
   onInputSizeChanged?(layout: { width: number, height: number }): void
 }
 
 export function Composer ({
   composerHeight = MIN_COMPOSER_HEIGHT,
-  disableComposer = false,
-  keyboardAppearance = 'default',
-  multiline = true,
   onInputSizeChanged,
   onTextChanged,
-  placeholder = DEFAULT_PLACEHOLDER,
-  placeholderTextColor = Color.defaultColor,
   text = '',
-  textInputAutoFocus = false,
   textInputProps,
-  textInputStyle,
 }: ComposerProps): React.ReactElement {
   const dimensionsRef = useRef<{ width: number, height: number }>(null)
+  const colorScheme = useColorScheme()
+  const isDark = colorScheme === 'dark'
 
   const determineInputSizeChange = useCallback(
     (dimensions: { width: number, height: number }) => {
@@ -69,21 +58,28 @@ export function Composer ({
     [determineInputSizeChange]
   )
 
+  const placeholder = textInputProps?.placeholder ?? 'Type a message...'
+
   return (
     <TextInput
       testID={placeholder}
       accessible
       accessibilityLabel={placeholder}
-      placeholder={placeholder}
-      placeholderTextColor={placeholderTextColor}
-      multiline={multiline}
-      editable={!disableComposer}
+      placeholderTextColor={textInputProps?.placeholderTextColor ?? (isDark ? '#888' : Color.defaultColor)}
       onContentSizeChange={handleContentSizeChange}
       onChangeText={onTextChanged}
+      value={text}
+      enablesReturnKeyAutomatically
+      underlineColorAndroid='transparent'
+      keyboardAppearance={isDark ? 'dark' : 'default'}
+      multiline
+      placeholder={placeholder}
+      {...textInputProps}
       style={[
         stylesCommon.fill,
         styles.textInput,
-        textInputStyle,
+        styles[`textInput_${colorScheme}`],
+        textInputProps?.style,
         {
           height: composerHeight,
           ...Platform.select({
@@ -95,12 +91,6 @@ export function Composer ({
           }),
         },
       ]}
-      autoFocus={textInputAutoFocus}
-      value={text}
-      enablesReturnKeyAutomatically
-      underlineColorAndroid='transparent'
-      keyboardAppearance={keyboardAppearance}
-      {...textInputProps}
     />
   )
 }
@@ -126,5 +116,8 @@ const styles = StyleSheet.create({
       android: 3,
       web: 4,
     }),
+  },
+  textInput_dark: {
+    color: '#fff',
   },
 })

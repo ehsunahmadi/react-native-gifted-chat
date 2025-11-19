@@ -3,15 +3,15 @@ import {
   Text,
   StyleSheet,
   View,
-  TouchableOpacity,
   StyleProp,
   ViewStyle,
   TextStyle,
 } from 'react-native'
-import { IMessage, Reply } from './types'
-import Color from './Color'
+import { Color } from './Color'
+import { TouchableOpacity } from './components/TouchableOpacity'
 import { warning } from './logging'
 import stylesCommon from './styles'
+import { IMessage, Reply } from './types'
 
 const styles = StyleSheet.create({
   container: {
@@ -122,6 +122,22 @@ export function QuickReplies ({
     [replies, currentMessage, handleSend]
   )
 
+  const renderSendButton = useMemo(() => {
+    if (!replies.length)
+      return null
+
+    return (
+      <TouchableOpacity
+        style={[stylesCommon.centerItems, styles.quickReply, styles.sendLink]}
+        onPress={handleSend(replies)}
+      >
+        {renderQuickReplySend?.() || (
+          <Text style={styles.sendLinkText}>{sendText}</Text>
+        )}
+      </TouchableOpacity>
+    )
+  }, [replies, handleSend, renderQuickReplySend, sendText])
+
   if (!shouldComponentDisplay)
     return null
 
@@ -159,16 +175,7 @@ export function QuickReplies ({
           )
         }
       )}
-      {replies.length > 0 && (
-        <TouchableOpacity
-          style={[stylesCommon.centerItems, styles.quickReply, styles.sendLink]}
-          onPress={handleSend(replies)}
-        >
-          {renderQuickReplySend?.() || (
-            <Text style={styles.sendLinkText}>{sendText}</Text>
-          )}
-        </TouchableOpacity>
-      )}
+      {renderSendButton}
     </View>
   )
 }

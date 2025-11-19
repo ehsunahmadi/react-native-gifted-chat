@@ -2,22 +2,22 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { LayoutChangeEvent } from 'react-native'
 import Animated, { interpolate, useAnimatedStyle, useDerivedValue, useSharedValue, useAnimatedReaction, withTiming, runOnJS } from 'react-native-reanimated'
 import { Day } from '../../../Day'
+import stylesCommon from '../../../styles'
 import { isSameDay } from '../../../utils'
 import { useAbsoluteScrolledPositionToBottomOfDay, useRelativeScrolledPositionToBottomOfDay } from '../Item'
-import { DayAnimatedProps } from './types'
 
-import stylesCommon from '../../../styles'
 import styles from './styles'
+import { DayAnimatedProps } from './types'
 
 export * from './types'
 
-const DayAnimated = ({ scrolledY, daysPositions, listHeight, renderDay, messages, isLoadingEarlier, ...rest }: DayAnimatedProps) => {
+export const DayAnimated = ({ scrolledY, daysPositions, listHeight, renderDay, messages, isLoading, ...rest }: DayAnimatedProps) => {
   const opacity = useSharedValue(0)
   const fadeOutOpacityTimeoutId = useSharedValue<ReturnType<typeof setTimeout> | undefined>(undefined)
   const containerHeight = useSharedValue(0)
 
   const isScrolledOnMount = useSharedValue(false)
-  const isLoadingEarlierAnim = useSharedValue(isLoadingEarlier)
+  const isLoadingAnim = useSharedValue(isLoading)
 
   const daysPositionsArray = useDerivedValue(() => Object.values(daysPositions.value).sort((a, b) => a.y - b.y))
 
@@ -57,11 +57,11 @@ const DayAnimated = ({ scrolledY, daysPositions, listHeight, renderDay, messages
   const style = useAnimatedStyle(() => ({
     top: interpolate(
       relativeScrolledPositionToBottomOfDay.value,
-      [-dayTopOffset, -0.0001, 0, isLoadingEarlierAnim.value ? 0 : containerHeight.value + dayTopOffset],
-      [dayTopOffset, dayTopOffset, -containerHeight.value, isLoadingEarlierAnim.value ? -containerHeight.value : dayTopOffset],
+      [-dayTopOffset, -0.0001, 0, isLoadingAnim.value ? 0 : containerHeight.value + dayTopOffset],
+      [dayTopOffset, dayTopOffset, -containerHeight.value, isLoadingAnim.value ? -containerHeight.value : dayTopOffset],
       'clamp'
     ),
-  }), [relativeScrolledPositionToBottomOfDay, containerHeight, dayTopOffset, isLoadingEarlierAnim])
+  }), [relativeScrolledPositionToBottomOfDay, containerHeight, dayTopOffset, isLoadingAnim])
 
   const contentStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -111,8 +111,21 @@ const DayAnimated = ({ scrolledY, daysPositions, listHeight, renderDay, messages
   )
 
   useEffect(() => {
-    isLoadingEarlierAnim.value = isLoadingEarlier
-  }, [isLoadingEarlierAnim, isLoadingEarlier])
+    isLoadingAnim.value = isLoading
+  }, [isLoadingAnim, isLoading])
+
+  const dayContent = useMemo(() => {
+    if (!createdAt)
+      return null
+
+    return renderDay
+      ? renderDay({ ...rest, createdAt })
+      : <Day
+        {...rest}
+        containerStyle={[styles.dayAnimatedDayContainerStyle, rest.containerStyle]}
+        createdAt={createdAt}
+      />
+  }, [createdAt, renderDay, rest])
 
   if (!createdAt)
     return null
@@ -121,23 +134,14 @@ const DayAnimated = ({ scrolledY, daysPositions, listHeight, renderDay, messages
     <Animated.View
       style={[stylesCommon.centerItems, styles.dayAnimated, style]}
       onLayout={handleLayout}
+      pointerEvents='none'
     >
       <Animated.View
         style={contentStyle}
         pointerEvents='none'
       >
-        {
-          renderDay
-            ? renderDay({ ...rest, createdAt })
-            : <Day
-              {...rest}
-              containerStyle={[styles.dayAnimatedDayContainerStyle, rest.containerStyle]}
-              createdAt={createdAt}
-            />
-        }
+        {dayContent}
       </Animated.View>
     </Animated.View>
   )
 }
-
-export default DayAnimated
