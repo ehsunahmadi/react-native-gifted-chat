@@ -1,51 +1,20 @@
-import * as Linking from 'expo-linking'
-import * as Location from 'expo-location'
-import * as Permissions from 'expo-permissions'
 import * as ImagePicker from 'expo-image-picker'
 
-import { Alert } from 'react-native'
+import { getCurrentPositionAsync, LocationObjectCoords, requestForegroundPermissionsAsync } from 'expo-location'
 
-export default async function getPermissionAsync (
-  permission: Permissions.PermissionType
-) {
-  const { status } = await Permissions.askAsync(permission)
-  if (status !== 'granted') {
-    const permissionName = permission.toLowerCase().replace('_', ' ')
-    Alert.alert(
-      'Cannot be done 😞',
-      `If you would like to use this feature, you'll need to enable the ${permissionName} permission in your phone settings.`,
-      [
-        {
-          text: 'Let\'s go!',
-          onPress: () => Linking.openURL('app-settings:'),
-        },
-        { text: 'Nevermind', onPress: () => {}, style: 'cancel' },
-      ],
-      { cancelable: true }
-    )
-
-    return false
-  }
-  return true
-}
-
-export async function getLocationAsync (
-  onSend: (locations: { location: Location.LocationObjectCoords }[]) => void
-) {
-  const response = await Location.requestForegroundPermissionsAsync()
+export async function getLocationAsync (): Promise<LocationObjectCoords | undefined> {
+  const response = await requestForegroundPermissionsAsync()
   if (!response.granted)
     return
 
-  const location = await Location.getCurrentPositionAsync()
+  const location = await getCurrentPositionAsync()
   if (!location)
     return
 
-  onSend([{ location: location.coords }])
+  return location.coords
 }
 
-export async function pickImageAsync (
-  onSend: (images: { image: string }[]) => void
-) {
+export async function pickImageAsync (): Promise<string[] | undefined> {
   const response = await ImagePicker.requestMediaLibraryPermissionsAsync()
   if (!response.granted)
     return
@@ -58,13 +27,10 @@ export async function pickImageAsync (
   if (result.canceled)
     return
 
-  const images = result.assets.map(({ uri: image }) => ({ image }))
-  onSend(images)
+  return result.assets.map(({ uri }) => uri)
 }
 
-export async function takePictureAsync (
-  onSend: (images: { image: string }[]) => void
-) {
+export async function takePictureAsync (): Promise<string[] | undefined> {
   const response = await ImagePicker.requestCameraPermissionsAsync()
   if (!response.granted)
     return
@@ -77,6 +43,5 @@ export async function takePictureAsync (
   if (result.canceled)
     return
 
-  const images = result.assets.map(({ uri: image }) => ({ image }))
-  onSend(images)
+  return result.assets.map(({ uri }) => uri)
 }

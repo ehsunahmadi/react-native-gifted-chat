@@ -13,16 +13,16 @@ import Bubble from './SlackBubble'
 const { isSameUser, isSameDay } = utils
 
 interface Props {
-  renderAvatar?: (props: AvatarProps<IMessage>) => void,
-  renderBubble?: (props: BubbleProps<IMessage>) => void,
-  renderDay?: (props: DayProps) => void,
-  currentMessage: any,
-  nextMessage?: any,
-  previousMessage?: any,
+  renderAvatar?: (props: AvatarProps<IMessage>) => void
+  renderBubble?: (props: BubbleProps<IMessage>) => void
+  renderDay?: (props: DayProps) => void
+  currentMessage: any
+  nextMessage?: any
+  previousMessage?: any
   containerStyle?: {
-    left: StyleProp<ViewStyle>,
-    right: StyleProp<ViewStyle>,
-  },
+    left: StyleProp<ViewStyle>
+    right: StyleProp<ViewStyle>
+  }
 }
 
 const Message = (props: Props) => {
@@ -54,7 +54,7 @@ const Message = (props: Props) => {
     }
 
     return null
-  }, [])
+  }, [currentMessage.createdAt, getInnerComponentProps, props])
 
   const renderBubble = useCallback(() => {
     const bubbleProps = getInnerComponentProps()
@@ -63,7 +63,7 @@ const Message = (props: Props) => {
       return props.renderBubble(bubbleProps)
 
     return <Bubble {...bubbleProps} />
-  }, [])
+  }, [getInnerComponentProps, props])
 
   const renderAvatar = useCallback(() => {
     let extraStyle
@@ -87,7 +87,7 @@ const Message = (props: Props) => {
         }}
       />
     )
-  }, [])
+  }, [currentMessage, previousMessage, getInnerComponentProps, props])
 
   const marginBottom = useMemo(() =>
     isSameUser(

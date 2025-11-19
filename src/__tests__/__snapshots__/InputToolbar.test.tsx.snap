@@ -9,6 +9,7 @@ exports[`should render <InputToolbar /> and compare with snapshot 1`] = `
         "borderTopColor": "#b2b2b2",
         "borderTopWidth": 0.5,
       },
+      false,
       undefined,
     ]
   }
@@ -27,8 +28,6 @@ exports[`should render <InputToolbar /> and compare with snapshot 1`] = `
     <TextInput
       accessibilityLabel="Type a message..."
       accessible={true}
-      autoFocus={false}
-      editable={true}
       enablesReturnKeyAutomatically={true}
       keyboardAppearance="default"
       multiline={true}
@@ -47,6 +46,7 @@ exports[`should render <InputToolbar /> and compare with snapshot 1`] = `
             "marginLeft": 10,
             "marginTop": 6,
           },
+          undefined,
           undefined,
           {
             "height": 33,

@@ -22,59 +22,95 @@ exports[`should render <Actions /> and compare with snapshot 1`] = `
   accessible={true}
   collapsable={false}
   focusable={true}
+  onBlur={[Function]}
   onClick={[Function]}
+  onFocus={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  style={
-    {
-      "height": 26,
-      "marginBottom": 10,
-      "marginLeft": 10,
-      "opacity": 1,
-      "width": 26,
-    }
-  }
 >
   <View
+    collapsable={false}
+    jestAnimatedProps={
+      {
+        "value": {},
+      }
+    }
+    jestAnimatedStyle={
+      {
+        "value": {
+          "opacity": 1,
+        },
+      }
+    }
+    jestInlineStyle={
+      [
+        [
+          {
+            "height": 26,
+            "marginBottom": 10,
+            "marginLeft": 10,
+            "width": 26,
+          },
+          undefined,
+        ],
+      ]
+    }
     style={
       [
         {
-          "flex": 1,
-        },
-        {
-          "alignItems": "center",
-          "justifyContent": "center",
-        },
-        {
-          "borderColor": "#b2b2b2",
-          "borderRadius": 13,
-          "borderWidth": 2,
+          "height": 26,
+          "marginBottom": 10,
+          "marginLeft": 10,
+          "width": 26,
         },
         undefined,
+        {
+          "opacity": 1,
+        },
       ]
     }
   >
-    <Text
+    <View
       style={
         [
           {
-            "backgroundColor": "transparent",
-            "color": "#b2b2b2",
-            "fontSize": 16,
-            "fontWeight": "bold",
-            "lineHeight": 16,
-            "textAlign": "center",
+            "flex": 1,
+          },
+          {
+            "alignItems": "center",
+            "justifyContent": "center",
+          },
+          {
+            "borderColor": "#b2b2b2",
+            "borderRadius": 13,
+            "borderWidth": 2,
           },
           undefined,
         ]
       }
     >
-      +
-    </Text>
+      <Text
+        style={
+          [
+            {
+              "backgroundColor": "transparent",
+              "color": "#b2b2b2",
+              "fontSize": 16,
+              "fontWeight": "bold",
+              "lineHeight": 16,
+              "textAlign": "center",
+            },
+            undefined,
+          ]
+        }
+      >
+        +
+      </Text>
+    </View>
   </View>
 </View>
 `;

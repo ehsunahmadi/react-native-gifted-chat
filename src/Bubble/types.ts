@@ -4,9 +4,9 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native'
-import { QuickRepliesProps } from '../QuickReplies'
-import { MessageTextProps } from '../MessageText'
 import { MessageImageProps } from '../MessageImage'
+import { MessageTextProps } from '../MessageText'
+import { QuickRepliesProps } from '../QuickReplies'
 import { TimeProps } from '../Time'
 import {
   User,
@@ -18,7 +18,7 @@ import {
   MessageAudioProps,
 } from '../types'
 
-/* eslint-disable no-use-before-define */
+
 export type RenderMessageImageProps<TMessage extends IMessage> = Omit<
   BubbleProps<TMessage>,
   'containerStyle' | 'wrapperStyle'
@@ -42,7 +42,7 @@ export type RenderMessageTextProps<TMessage extends IMessage> = Omit<
   'containerStyle' | 'wrapperStyle'
 > &
   MessageTextProps<TMessage>
-/* eslint-enable no-use-before-define */
+
 
 export interface BubbleProps<TMessage extends IMessage> {
   user?: User
@@ -54,7 +54,6 @@ export interface BubbleProps<TMessage extends IMessage> {
   currentMessage: TMessage
   nextMessage?: TMessage
   previousMessage?: TMessage
-  optionTitles?: string[]
   containerStyle?: LeftRightStyle<ViewStyle>
   wrapperStyle?: LeftRightStyle<ViewStyle>
   textStyle?: LeftRightStyle<TextStyle>
@@ -66,8 +65,9 @@ export interface BubbleProps<TMessage extends IMessage> {
   quickReplyStyle?: StyleProp<ViewStyle>
   quickReplyTextStyle?: StyleProp<TextStyle>
   quickReplyContainerStyle?: StyleProp<ViewStyle>
-  onPress?(context?: unknown, message?: unknown): void
-  onLongPress?(context?: unknown, message?: unknown): void
+  messageTextProps?: Partial<MessageTextProps<TMessage>>
+  onPressMessage?(context?: unknown, message?: unknown): void
+  onLongPressMessage?(context?: unknown, message?: unknown): void
   onQuickReply?(replies: Reply[]): void
   renderMessageImage?(
     props: RenderMessageImageProps<TMessage>,

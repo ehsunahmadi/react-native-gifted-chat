@@ -1,15 +1,16 @@
 import React, { useMemo } from 'react'
-import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native'
+import { StyleSheet, View, StyleProp, ViewStyle, useColorScheme } from 'react-native'
 
+import { Actions, ActionsProps } from './Actions'
+import { Color } from './Color'
 import { Composer, ComposerProps } from './Composer'
 import { Send, SendProps } from './Send'
-import { Actions, ActionsProps } from './Actions'
-import Color from './Color'
 import { IMessage } from './types'
+import { renderComponentOrElement } from './utils'
 
 export interface InputToolbarProps<TMessage extends IMessage> {
-  options?: { [key: string]: () => void }
-  optionTintColor?: string
+  actions?: Array<{ title: string, action: () => void }>
+  actionSheetOptionTintColor?: string
   containerStyle?: StyleProp<ViewStyle>
   primaryStyle?: StyleProp<ViewStyle>
   accessoryStyle?: StyleProp<ViewStyle>
@@ -31,56 +32,77 @@ export function InputToolbar<TMessage extends IMessage = IMessage> (
     renderComposer,
     renderSend,
     renderAccessory,
-    options,
-    optionTintColor,
+    actions,
+    actionSheetOptionTintColor,
     icon,
     wrapperStyle,
     containerStyle,
   } = props
 
+  const colorScheme = useColorScheme()
+
   const actionsFragment = useMemo(() => {
-    const props = {
+    const actionsProps = {
       onPressActionButton,
-      options,
-      optionTintColor,
+      actions,
+      actionSheetOptionTintColor,
       icon,
       wrapperStyle,
       containerStyle,
     }
 
-    return (
-      renderActions?.(props) || (onPressActionButton && <Actions {...props} />)
-    )
+    if (renderActions)
+      return renderComponentOrElement(renderActions, actionsProps)
+
+    if (onPressActionButton)
+      return <Actions {...actionsProps} />
+
+    return null
   }, [
     renderActions,
     onPressActionButton,
-    options,
-    optionTintColor,
+    actions,
+    actionSheetOptionTintColor,
     icon,
     wrapperStyle,
     containerStyle,
   ])
 
   const composerFragment = useMemo(() => {
-    return (
-      renderComposer?.(props as ComposerProps) || (
-        <Composer {...(props as ComposerProps)} />
-      )
-    )
+    const composerProps = props as ComposerProps
+
+    if (renderComposer)
+      return renderComponentOrElement(renderComposer, composerProps)
+
+    return <Composer {...composerProps} />
   }, [renderComposer, props])
 
+  const sendFragment = useMemo(() => {
+    if (renderSend)
+      return renderComponentOrElement(renderSend, props)
+
+    return <Send {...props} />
+  }, [renderSend, props])
+
+  const accessoryFragment = useMemo(() => {
+    if (!renderAccessory)
+      return null
+
+    return (
+      <View style={[styles.accessory, props.accessoryStyle]}>
+        {renderComponentOrElement(renderAccessory, props)}
+      </View>
+    )
+  }, [renderAccessory, props])
+
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container, colorScheme === 'dark' && styles.container_dark, containerStyle]}>
       <View style={[styles.primary, props.primaryStyle]}>
         {actionsFragment}
         {composerFragment}
-        {renderSend?.(props) || <Send {...props} />}
+        {sendFragment}
       </View>
-      {renderAccessory && (
-        <View style={[styles.accessory, props.accessoryStyle]}>
-          {renderAccessory(props)}
-        </View>
-      )}
+      {accessoryFragment}
     </View>
   )
 }
@@ -90,6 +112,10 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: Color.defaultColor,
     backgroundColor: Color.white,
+  },
+  container_dark: {
+    backgroundColor: '#1a1a1a',
+    borderTopColor: '#444',
   },
   primary: {
     flexDirection: 'row',
