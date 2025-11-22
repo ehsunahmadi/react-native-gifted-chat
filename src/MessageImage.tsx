@@ -14,7 +14,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
-import { BaseButton, GestureHandlerRootView } from 'react-native-gesture-handler'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import commonStyles from './styles'
 import { IMessage } from './types'
@@ -155,13 +155,13 @@ export function MessageImage<TMessage extends IMessage = IMessage> ({
 
             {/* close button */}
             <View style={styles.closeButtonContainer}>
-              <BaseButton onPress={handleModalClose}>
+              <TouchableOpacity onPress={handleModalClose}>
                 <View style={styles.closeButtonContent}>
                   <Text style={styles.closeButtonIcon}>
                     {'X'}
                   </Text>
                 </View>
-              </BaseButton>
+              </TouchableOpacity>
             </View>
 
             <View style={[commonStyles.fill, commonStyles.centerItems]}>
