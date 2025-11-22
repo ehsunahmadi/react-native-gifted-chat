@@ -16,11 +16,8 @@ import {
 } from 'react-native'
 import { BaseButton, GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import * as ZoomModule from 'react-native-zoom-reanimated'
 import commonStyles from './styles'
 import { IMessage } from './types'
-
-const Zoom = (ZoomModule as any).default ?? ZoomModule
 
 const styles = StyleSheet.create({
   image: {
@@ -168,14 +165,12 @@ export function MessageImage<TMessage extends IMessage = IMessage> ({
             </View>
 
             <View style={[commonStyles.fill, commonStyles.centerItems]}>
-              <Zoom>
-                <Image
-                  style={modalImageDimensions}
-                  source={imageSource}
-                  resizeMode='contain'
-                  {...imageProps}
-                />
-              </Zoom>
+              <Image
+                style={modalImageDimensions}
+                source={imageSource}
+                resizeMode='contain'
+                {...imageProps}
+              />
             </View>
           </View>
         </GestureHandlerRootView>

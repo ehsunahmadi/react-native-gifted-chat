@@ -1,12 +1,12 @@
 import React, { useCallback, useRef } from 'react'
 import {
-    NativeSyntheticEvent,
-    Platform,
-    StyleSheet,
-    TextInput,
-    TextInputContentSizeChangeEventData,
-    TextInputProps,
-    useColorScheme,
+  NativeSyntheticEvent,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TextInputContentSizeChangeEventData,
+  TextInputProps,
+  useColorScheme,
 } from 'react-native'
 import { Color } from './Color'
 import { MIN_COMPOSER_HEIGHT } from './Constant'

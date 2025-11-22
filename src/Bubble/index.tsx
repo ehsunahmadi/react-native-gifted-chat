@@ -70,7 +70,7 @@ export const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<
     const options = optionTitles
     const cancelButtonIndex = options.length - 1
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       ;(context as any).actionSheet().showActionSheetWithOptions(
       {
         options,

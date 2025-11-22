@@ -29,7 +29,7 @@ const messages: IMessage[] = [
       name: 'React Native',
       avatar: 'https://placeimg.com/140/140/any',
     },
-    image: 'https://placeimg.com/960/540/any',
+    image: 'https://picsum.photos/960/540',
   },
   {
     _id: 4,

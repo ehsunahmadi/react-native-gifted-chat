@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native'
 export type { ActionsProps } from './Actions'
 export type { AvatarProps } from './Avatar'
 export type {
-    BubbleProps, RenderMessageAudioProps, RenderMessageImageProps, RenderMessageTextProps, RenderMessageVideoProps
+  BubbleProps, RenderMessageAudioProps, RenderMessageImageProps, RenderMessageTextProps, RenderMessageVideoProps
 } from './Bubble'
 export type { ComposerProps } from './Composer'
 export type { DayProps } from './Day'

@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from 'react'
 import {
-    Image,
-    ImageStyle,
-    StyleProp,
-    StyleSheet,
-    Text,
-    TextStyle,
-    View,
+  Image,
+  ImageStyle,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
 } from 'react-native'
 import { Color } from './Color'
 import { TouchableOpacity } from './components/TouchableOpacity'

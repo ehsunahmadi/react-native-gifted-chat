@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from 'react'
 import {
-    StyleProp,
-    StyleSheet,
-    Text,
-    TextStyle,
-    useColorScheme,
-    View,
-    ViewStyle,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  useColorScheme,
+  View,
+  ViewStyle,
 } from 'react-native'
 import { Color } from './Color'
 
