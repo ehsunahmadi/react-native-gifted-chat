@@ -11,5 +11,6 @@ export interface MessageImageProps<TMessage extends IMessage> {
         disabled?: boolean;
         [key: string]: any;
     };
+    onPress?: () => void;
 }
-export declare function MessageImage<TMessage extends IMessage = IMessage>({ containerStyle, imageProps, imageSourceProps, imageStyle, currentMessage, lightboxProps, }: MessageImageProps<TMessage>): React.JSX.Element | null;
+export declare function MessageImage<TMessage extends IMessage = IMessage>({ containerStyle, imageProps, imageSourceProps, imageStyle, currentMessage, lightboxProps, onPress, }: MessageImageProps<TMessage>): React.JSX.Element | null;
