@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleProp, ViewStyle, TextStyle, TouchableOpacityProps } from 'react-native';
+import { StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { TouchableOpacityProps } from './components/TouchableOpacity';
 import { IMessage } from './types';
 export interface SendProps<TMessage extends IMessage> {
     text?: string;

@@ -1,23 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Image,
-  StyleSheet,
-  View,
   ImageProps,
-  ViewStyle,
-  StyleProp,
   ImageStyle,
   ImageURISource,
-  Modal,
-  TouchableOpacity,
   LayoutChangeEvent,
+  Modal,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
   useWindowDimensions,
+  View,
+  ViewStyle,
 } from 'react-native'
-import { BaseButton, GestureHandlerRootView, Text } from 'react-native-gesture-handler'
+import { BaseButton, GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import Zoom from 'react-native-zoom-reanimated'
+import * as ZoomModule from 'react-native-zoom-reanimated'
 import commonStyles from './styles'
 import { IMessage } from './types'
+
+const Zoom = (ZoomModule as any).default ?? ZoomModule
 
 const styles = StyleSheet.create({
   image: {
@@ -55,6 +58,7 @@ export interface MessageImageProps<TMessage extends IMessage> {
   imageSourceProps?: Partial<ImageURISource>
   imageStyle?: StyleProp<ImageStyle>
   imageProps?: Partial<ImageProps>
+  lightboxProps?: object
 }
 
 export function MessageImage<TMessage extends IMessage = IMessage> ({

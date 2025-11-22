@@ -19,5 +19,4 @@ export declare const useRelativeScrolledPositionToBottomOfDay: (listHeight: {
 }, containerHeight: {
     value: number;
 }, dayBottomMargin: number, dayTopOffset: number, createdAt?: number) => import("react-native-reanimated").DerivedValue<number>;
-declare const Item: <TMessage extends IMessage>(props: ItemProps<TMessage>) => React.JSX.Element;
-export default Item;
+export declare const Item: <TMessage extends IMessage>(props: ItemProps<TMessage>) => React.JSX.Element;

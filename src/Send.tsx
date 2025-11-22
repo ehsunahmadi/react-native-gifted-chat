@@ -1,12 +1,12 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {
-  StyleSheet,
-  Text,
-  View,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
-  useColorScheme,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TextStyle,
+    useColorScheme,
+    View,
+    ViewStyle,
 } from 'react-native'
 import { Color } from './Color'
 
@@ -86,7 +86,7 @@ export const Send = <TMessage extends IMessage = IMessage>({
       {...sendButtonProps}
     >
       <View>
-        {children || <Text style={[styles.text, styles[`text_${colorScheme}`], textStyle]}>{label}</Text>}
+        {children || <Text style={[styles.text, (colorScheme === 'dark' ? styles.text_dark : undefined), textStyle]}>{label}</Text>}
       </View>
     </TouchableOpacity>
   )

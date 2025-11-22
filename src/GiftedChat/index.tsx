@@ -84,7 +84,7 @@ function GiftedChat<TMessage extends IMessage = IMessage> (
     [props.textInputRef]
   )
 
-  const isTextInputWasFocused: RefObject<boolean> = useRef(false)
+  const isTextInputWasFocused = useRef<boolean>(false)
 
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
   const [composerHeight, setComposerHeight] = useState<number>(
@@ -402,11 +402,11 @@ function GiftedChat<TMessage extends IMessage = IMessage> (
 
 function GiftedChatWrapper<TMessage extends IMessage = IMessage> (props: GiftedChatProps<TMessage>) {
   return (
-      <GestureHandlerRootView style={styles.fill}>
-        <SafeAreaProvider>
-          <GiftedChat<TMessage> {...props} />
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+    <GestureHandlerRootView style={styles.fill}>
+      <SafeAreaProvider>
+        <GiftedChat<TMessage> {...props} />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }
 

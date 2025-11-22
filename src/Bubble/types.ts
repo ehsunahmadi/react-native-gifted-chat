@@ -1,21 +1,21 @@
 import React from 'react'
 import {
   StyleProp,
-  ViewStyle,
   TextStyle,
+  ViewStyle,
 } from 'react-native'
 import { MessageImageProps } from '../MessageImage'
 import { MessageTextProps } from '../MessageText'
 import { QuickRepliesProps } from '../QuickReplies'
 import { TimeProps } from '../Time'
 import {
-  User,
   IMessage,
   LeftRightStyle,
-  Reply,
-  Omit,
-  MessageVideoProps,
   MessageAudioProps,
+  MessageVideoProps,
+  Omit,
+  Reply,
+  User,
 } from '../types'
 
 
@@ -68,6 +68,8 @@ export interface BubbleProps<TMessage extends IMessage> {
   messageTextProps?: Partial<MessageTextProps<TMessage>>
   onPressMessage?(context?: unknown, message?: unknown): void
   onLongPressMessage?(context?: unknown, message?: unknown): void
+  onLongPress?(context?: unknown, message?: unknown): void
+  optionTitles?: string[]
   onQuickReply?(replies: Reply[]): void
   renderMessageImage?(
     props: RenderMessageImageProps<TMessage>,

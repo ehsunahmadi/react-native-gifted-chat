@@ -1,5 +1,4 @@
 import React from 'react';
 import { TypingIndicatorProps } from './types';
 export * from './types';
-declare const TypingIndicator: ({ isTyping }: TypingIndicatorProps) => React.JSX.Element | null;
-export default TypingIndicator;
+export declare const TypingIndicator: ({ isTyping, style }: TypingIndicatorProps) => React.JSX.Element | null;

@@ -1,39 +1,56 @@
-import React, { Component, RefObject } from 'react';
+import React, { RefObject } from 'react';
 import { FlatListProps, StyleProp, ViewStyle } from 'react-native';
-import { LoadEarlierProps } from '../LoadEarlier';
+import { FlatList } from 'react-native-gesture-handler';
+import { LoadEarlierMessagesProps } from '../LoadEarlierMessages';
 import { MessageProps } from '../Message';
-import { User, IMessage, Reply, DayProps } from '../types';
-import { ReanimatedScrollEvent } from 'react-native-reanimated/lib/typescript/hook/commonTypes';
-import { FlatList } from 'react-native-reanimated/lib/typescript/Animated';
-import { AnimateProps } from 'react-native-reanimated';
-export type ListViewProps<TMessage extends IMessage = IMessage> = Partial<FlatListProps<TMessage>>;
-export type AnimatedList<TMessage> = Component<AnimateProps<FlatListProps<TMessage>>, unknown, unknown> & FlatList<FlatListProps<TMessage>>;
-export interface MessageContainerProps<TMessage extends IMessage = IMessage> {
+import { ReanimatedScrollEvent } from '../reanimatedCompat';
+import { DayProps, IMessage, Reply, User } from '../types';
+import { TypingIndicatorProps } from '../TypingIndicator/types';
+export type ListProps<TMessage extends IMessage = IMessage> = Partial<FlatListProps<TMessage>>;
+export type AnimatedList<TMessage> = FlatList<TMessage>;
+export interface MessageContainerProps<TMessage extends IMessage = IMessage> extends Omit<TypingIndicatorProps, 'style'> {
+    /** Ref for the FlatList message container */
     forwardRef?: RefObject<AnimatedList<TMessage>>;
+    /** Messages to display */
     messages?: TMessage[];
-    isTyping?: boolean;
+    /** User sending the messages: { _id, name, avatar } */
     user?: User;
-    listViewProps?: ListViewProps;
+    /** Additional props for FlatList */
+    listProps?: ListProps<TMessage>;
+    /** Reverses display order of messages; default is true */
     inverted?: boolean;
-    loadEarlier?: boolean;
+    /** Controls whether or not the message bubbles appear at the top of the chat */
     alignTop?: boolean;
+    /** Enables the isScrollToBottomEnabled Component */
     isScrollToBottomEnabled?: boolean;
+    /** Scroll to bottom wrapper style */
     scrollToBottomStyle?: StyleProp<ViewStyle>;
-    invertibleScrollViewProps?: object;
+    /** This can be used to pass unknown data which needs to be re-rendered */
     extraData?: object;
+    /** Distance from bottom before showing scroll to bottom button */
     scrollToBottomOffset?: number;
+    /** Custom component to render when messages are empty */
     renderChatEmpty?(): React.ReactNode;
+    /** Custom footer component on the ListView, e.g. 'User is typing...' */
     renderFooter?(props: MessageContainerProps<TMessage>): React.ReactNode;
+    /** Custom message container */
     renderMessage?(props: MessageProps<TMessage>): React.ReactElement;
+    /** Custom day above a message */
     renderDay?(props: DayProps): React.ReactNode;
-    renderLoadEarlier?(props: LoadEarlierProps): React.ReactNode;
+    /** Custom "Load earlier messages" button */
+    renderLoadEarlier?(props: LoadEarlierMessagesProps): React.ReactNode;
+    /** Custom typing indicator */
     renderTypingIndicator?(): React.ReactNode;
+    /** Scroll to bottom custom component */
     scrollToBottomComponent?(): React.ReactNode;
-    onLoadEarlier?(): void;
+    /** Callback when quick reply is sent */
     onQuickReply?(replies: Reply[]): void;
-    infiniteScroll?: boolean;
-    isLoadingEarlier?: boolean;
+    /** Props to pass to the LoadEarlierMessages component. The LoadEarlierMessages button is only visible when isAvailable is true. Includes isAvailable (controls button visibility), isInfiniteScrollEnabled (infinite scroll up when reach the top of messages container, automatically call onPress function if it exists - not yet supported for web), onPress (callback when button is pressed), isLoading (display loading indicator), label (override default "Load earlier messages" text), and styling props (containerStyle, wrapperStyle, textStyle, activityIndicatorStyle, activityIndicatorColor, activityIndicatorSize). */
+    loadEarlierMessagesProps?: LoadEarlierMessagesProps;
+    /** Custom scroll event handler */
     handleOnScroll?(event: ReanimatedScrollEvent): void;
+    /** Style for TypingIndicator component */
+    typingIndicatorStyle?: StyleProp<ViewStyle>;
 }
 export interface State {
     showScrollBottom: boolean;

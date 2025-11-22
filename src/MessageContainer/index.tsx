@@ -168,9 +168,9 @@ export const MessageContainer = <TMessage extends IMessage>(props: MessageContai
 
     if (messages && user) {
       const previousMessage =
-        (inverted ? messages[index + 1] : messages[index - 1]) || {}
+        (inverted ? messages[index + 1] : messages[index - 1]) as TMessage | undefined
       const nextMessage =
-        (inverted ? messages[index - 1] : messages[index + 1]) || {}
+        (inverted ? messages[index - 1] : messages[index + 1]) as TMessage | undefined
 
       const messageProps: ItemProps<TMessage> = {
         ...restProps,

@@ -1,11 +1,11 @@
 import React, { ReactNode, useCallback } from 'react'
 import {
-  StyleSheet,
-  Text,
-  View,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TextStyle,
+    View,
+    ViewStyle,
 } from 'react-native'
 import { Color } from './Color'
 import { TouchableOpacity } from './components/TouchableOpacity'
@@ -51,7 +51,7 @@ export function Actions ({
           return
 
         const item = actions[buttonIndex]
-        item.action?.()
+        item?.action()
       }
     )
   }, [actionSheet, actions, actionSheetOptionTintColor])

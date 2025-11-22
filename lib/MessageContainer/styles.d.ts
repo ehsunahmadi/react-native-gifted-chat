@@ -12,12 +12,13 @@ declare const _default: {
             scaleY: number;
         }[];
     };
-    scrollToBottomStyle: {
-        opacity: number;
+    scrollToBottom: {
         position: "absolute";
         right: number;
         bottom: number;
         zIndex: number;
+    };
+    scrollToBottomContent: {
         height: number;
         width: number;
         borderRadius: number;

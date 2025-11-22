@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from 'react'
 import {
-  Image,
-  Text,
-  View,
-  StyleSheet,
-  StyleProp,
-  ImageStyle,
-  TextStyle,
+    Image,
+    ImageStyle,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TextStyle,
+    View,
 } from 'react-native'
 import { Color } from './Color'
 import { TouchableOpacity } from './components/TouchableOpacity'
@@ -63,9 +63,9 @@ export function GiftedAvatar (
     const name = userName.toUpperCase().split(' ')
 
     if (name.length === 1)
-      return `${name[0].charAt(0)}`
+      return `${name[0]?.charAt(0)}`
     else if (name.length > 1)
-      return `${name[0].charAt(0)}${name[1].charAt(0)}`
+      return `${name[0]?.charAt(0)}${name[1]?.charAt(0)}`
     else
       return ''
   }, [user?.name])

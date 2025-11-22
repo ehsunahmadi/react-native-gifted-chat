@@ -1,14 +1,15 @@
 import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
+import { ActionsProps } from './Actions';
 import { ComposerProps } from './Composer';
 import { SendProps } from './Send';
-import { ActionsProps } from './Actions';
 import { IMessage } from './types';
 export interface InputToolbarProps<TMessage extends IMessage> {
-    options?: {
-        [key: string]: () => void;
-    };
-    optionTintColor?: string;
+    actions?: Array<{
+        title: string;
+        action: () => void;
+    }>;
+    actionSheetOptionTintColor?: string;
     containerStyle?: StyleProp<ViewStyle>;
     primaryStyle?: StyleProp<ViewStyle>;
     accessoryStyle?: StyleProp<ViewStyle>;

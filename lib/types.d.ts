@@ -1,21 +1,20 @@
 import { StyleProp, ViewStyle } from 'react-native';
-import { LightboxProps } from 'react-native-lightbox-v2';
-export { ActionsProps } from './Actions';
-export { AvatarProps } from './Avatar';
-export { BubbleProps, RenderMessageImageProps, RenderMessageVideoProps, RenderMessageAudioProps, RenderMessageTextProps } from './Bubble';
-export { ComposerProps } from './Composer';
-export { DayProps } from './Day';
-export { GiftedAvatarProps } from './GiftedAvatar';
-export { InputToolbarProps } from './InputToolbar';
-export { LoadEarlierProps } from './LoadEarlier';
-export { MessageProps } from './Message';
-export { MessageContainerProps } from './MessageContainer';
-export { MessageImageProps } from './MessageImage';
-export { MessageTextProps } from './MessageText';
-export { QuickRepliesProps } from './QuickReplies';
-export { SendProps } from './Send';
-export { SystemMessageProps } from './SystemMessage';
-export { TimeProps } from './Time';
+export type { ActionsProps } from './Actions';
+export type { AvatarProps } from './Avatar';
+export type { BubbleProps, RenderMessageImageProps, RenderMessageVideoProps, RenderMessageAudioProps, RenderMessageTextProps } from './Bubble';
+export type { ComposerProps } from './Composer';
+export type { DayProps } from './Day';
+export type { GiftedAvatarProps } from './GiftedAvatar';
+export type { InputToolbarProps } from './InputToolbar';
+export type { LoadEarlierMessagesProps } from './LoadEarlierMessages';
+export type { MessageProps } from './Message';
+export type { MessageContainerProps } from './MessageContainer';
+export type { MessageImageProps } from './MessageImage';
+export type { MessageTextProps } from './MessageText';
+export type { QuickRepliesProps } from './QuickReplies';
+export type { SendProps } from './Send';
+export type { SystemMessageProps } from './SystemMessage';
+export type { TimeProps } from './Time';
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 export interface LeftRightStyle<T> {
     left?: StyleProp<T>;
@@ -50,6 +49,10 @@ export interface IMessage {
     received?: boolean;
     pending?: boolean;
     quickReplies?: QuickReplies;
+    location?: {
+        latitude: number;
+        longitude: number;
+    };
 }
 export type IChatMessage = IMessage;
 export interface MessageVideoProps<TMessage extends IMessage> {
@@ -57,7 +60,6 @@ export interface MessageVideoProps<TMessage extends IMessage> {
     containerStyle?: StyleProp<ViewStyle>;
     videoStyle?: StyleProp<ViewStyle>;
     videoProps?: object;
-    lightboxProps?: LightboxProps;
 }
 export interface MessageAudioProps<TMessage extends IMessage> {
     currentMessage: TMessage;

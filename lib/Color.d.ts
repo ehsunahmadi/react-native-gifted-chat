@@ -1,4 +1,4 @@
-declare const _default: {
+export declare const Color: {
     defaultColor: string;
     backgroundTransparent: string;
     defaultBlue: string;
@@ -15,4 +15,3 @@ declare const _default: {
     optionTintColor: string;
     timeTextColor: string;
 };
-export default _default;

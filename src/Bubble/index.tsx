@@ -49,6 +49,11 @@ export const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<
   }, [onPressMessageProp, context, currentMessage])
 
   const onLongPress = useCallback(() => {
+    if (onLongPressMessageProp) {
+      onLongPressMessageProp(context, currentMessage)
+      return
+    }
+
     const {
       onLongPress,
       optionTitles,
@@ -78,7 +83,8 @@ export const Bubble = <TMessage extends IMessage = IMessage>(props: BubbleProps<
   }, [
     currentMessage,
     context,
-    onLongPressMessageProp,
+    props.onLongPress,
+    props.optionTitles,
   ])
 
   const styledBubbleToNext = useCallback(() => {

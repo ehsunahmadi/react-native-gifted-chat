@@ -1,27 +1,23 @@
 import { StyleProp, ViewStyle } from 'react-native'
 
-export { ActionsProps } from './Actions'
-export { AvatarProps } from './Avatar'
-export {
-  BubbleProps,
-  RenderMessageImageProps,
-  RenderMessageVideoProps,
-  RenderMessageAudioProps,
-  RenderMessageTextProps
+export type { ActionsProps } from './Actions'
+export type { AvatarProps } from './Avatar'
+export type {
+    BubbleProps, RenderMessageAudioProps, RenderMessageImageProps, RenderMessageTextProps, RenderMessageVideoProps
 } from './Bubble'
-export { ComposerProps } from './Composer'
-export { DayProps } from './Day'
-export { GiftedAvatarProps } from './GiftedAvatar'
-export { InputToolbarProps } from './InputToolbar'
-export { LoadEarlierMessagesProps } from './LoadEarlierMessages'
-export { MessageProps } from './Message'
-export { MessageContainerProps } from './MessageContainer'
-export { MessageImageProps } from './MessageImage'
-export { MessageTextProps } from './MessageText'
-export { QuickRepliesProps } from './QuickReplies'
-export { SendProps } from './Send'
-export { SystemMessageProps } from './SystemMessage'
-export { TimeProps } from './Time'
+export type { ComposerProps } from './Composer'
+export type { DayProps } from './Day'
+export type { GiftedAvatarProps } from './GiftedAvatar'
+export type { InputToolbarProps } from './InputToolbar'
+export type { LoadEarlierMessagesProps } from './LoadEarlierMessages'
+export type { MessageProps } from './Message'
+export type { MessageContainerProps } from './MessageContainer'
+export type { MessageImageProps } from './MessageImage'
+export type { MessageTextProps } from './MessageText'
+export type { QuickRepliesProps } from './QuickReplies'
+export type { SendProps } from './Send'
+export type { SystemMessageProps } from './SystemMessage'
+export type { TimeProps } from './Time'
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 

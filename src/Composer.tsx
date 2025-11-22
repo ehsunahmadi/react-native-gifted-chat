@@ -1,12 +1,12 @@
 import React, { useCallback, useRef } from 'react'
 import {
-  Platform,
-  StyleSheet,
-  TextInput,
-  TextInputProps,
-  NativeSyntheticEvent,
-  TextInputContentSizeChangeEventData,
-  useColorScheme,
+    NativeSyntheticEvent,
+    Platform,
+    StyleSheet,
+    TextInput,
+    TextInputContentSizeChangeEventData,
+    TextInputProps,
+    useColorScheme,
 } from 'react-native'
 import { Color } from './Color'
 import { MIN_COMPOSER_HEIGHT } from './Constant'
@@ -27,7 +27,7 @@ export function Composer ({
   text = '',
   textInputProps,
 }: ComposerProps): React.ReactElement {
-  const dimensionsRef = useRef<{ width: number, height: number }>(null)
+  const dimensionsRef = useRef<{ width: number, height: number } | undefined>(undefined)
   const colorScheme = useColorScheme()
   const isDark = colorScheme === 'dark'
 
@@ -78,7 +78,7 @@ export function Composer ({
       style={[
         stylesCommon.fill,
         styles.textInput,
-        styles[`textInput_${colorScheme}`],
+        (colorScheme === 'dark' ? styles.textInput_dark : undefined),
         textInputProps?.style,
         {
           height: composerHeight,
