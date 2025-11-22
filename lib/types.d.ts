@@ -1,7 +1,7 @@
 import { StyleProp, ViewStyle } from 'react-native';
 export type { ActionsProps } from './Actions';
 export type { AvatarProps } from './Avatar';
-export type { BubbleProps, RenderMessageImageProps, RenderMessageVideoProps, RenderMessageAudioProps, RenderMessageTextProps } from './Bubble';
+export type { BubbleProps, RenderMessageAudioProps, RenderMessageImageProps, RenderMessageTextProps, RenderMessageVideoProps } from './Bubble';
 export type { ComposerProps } from './Composer';
 export type { DayProps } from './Day';
 export type { GiftedAvatarProps } from './GiftedAvatar';

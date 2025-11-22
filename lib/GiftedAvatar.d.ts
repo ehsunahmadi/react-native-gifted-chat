@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleProp, ImageStyle, TextStyle } from 'react-native';
+import { ImageStyle, StyleProp, TextStyle } from 'react-native';
 import { User } from './types';
 export interface GiftedAvatarProps {
     user?: User;
