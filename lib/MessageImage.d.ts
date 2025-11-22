@@ -7,6 +7,9 @@ export interface MessageImageProps<TMessage extends IMessage> {
     imageSourceProps?: Partial<ImageURISource>;
     imageStyle?: StyleProp<ImageStyle>;
     imageProps?: Partial<ImageProps>;
-    lightboxProps?: object;
+    lightboxProps?: {
+        disabled?: boolean;
+        [key: string]: any;
+    };
 }
-export declare function MessageImage<TMessage extends IMessage = IMessage>({ containerStyle, imageProps, imageSourceProps, imageStyle, currentMessage, }: MessageImageProps<TMessage>): React.JSX.Element | null;
+export declare function MessageImage<TMessage extends IMessage = IMessage>({ containerStyle, imageProps, imageSourceProps, imageStyle, currentMessage, lightboxProps, }: MessageImageProps<TMessage>): React.JSX.Element | null;

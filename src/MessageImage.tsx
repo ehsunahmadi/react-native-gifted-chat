@@ -55,7 +55,10 @@ export interface MessageImageProps<TMessage extends IMessage> {
   imageSourceProps?: Partial<ImageURISource>
   imageStyle?: StyleProp<ImageStyle>
   imageProps?: Partial<ImageProps>
-  lightboxProps?: object
+  lightboxProps?: {
+    disabled?: boolean
+    [key: string]: any
+  }
 }
 
 export function MessageImage<TMessage extends IMessage = IMessage> ({
@@ -64,6 +67,7 @@ export function MessageImage<TMessage extends IMessage = IMessage> ({
   imageSourceProps,
   imageStyle,
   currentMessage,
+  lightboxProps,
 }: MessageImageProps<TMessage>) {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [imageDimensions, setImageDimensions] = useState<{ width: number, height: number }>()
@@ -84,6 +88,9 @@ export function MessageImage<TMessage extends IMessage = IMessage> ({
   ], [imageStyle])
 
   const handleImagePress = useCallback(() => {
+    if (lightboxProps?.disabled)
+      return
+
     if (!imageSource.uri)
       return
 
@@ -93,7 +100,7 @@ export function MessageImage<TMessage extends IMessage = IMessage> ({
       Image.getSize(imageSource.uri, (width, height) => {
         setImageDimensions({ width, height })
       })
-  }, [imageSource.uri, imageDimensions])
+  }, [imageSource.uri, imageDimensions, lightboxProps?.disabled])
 
   const handleModalClose = useCallback(() => {
     setIsModalVisible(false)
