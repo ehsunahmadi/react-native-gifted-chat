@@ -362,7 +362,7 @@ export const MessageContainer = <TMessage extends IMessage>(props: MessageContai
       if (!shouldRemove) {
         const prevMessage = messages[messageIndex + (inverted ? 1 : -1)]
         const message = messages[messageIndex]
-        shouldRemove = !!prevMessage && isSameDay(message, prevMessage)
+        shouldRemove = !!prevMessage && isSameDay(message!, prevMessage)
       }
 
       if (shouldRemove)
